@@ -39,8 +39,7 @@ class Base():
             try:
                 ele = WebDriverWait(self.driver, self.timeout, self.t).until(EC.presence_of_element_located(locator))
             except TimeoutException as msg:
-                raise ElementNotFound("定位元素出现超时！！！！，不要盯着报错看了，也不用截图贴群里了，"
-                                      "先把定位技术学好，别复制粘贴xpath, 请检查你的定位方式，在浏览器先调试成功，观察页面是否正常打开")
+                raise ElementNotFound("定位元素出现超时！！！！")
             return ele
 
     def finds(self, locator):
@@ -165,6 +164,14 @@ class Base():
     def js_scroll_top(self):
         """滚动到顶部"""
         js = "window.scrollTo(0,0)"
+        self.driver.execute_script(js)
+    def js_scroll_end_1(self):
+        """滚动到底部1/3"""
+        js = "window.scrollTo(0,850)"
+        self.driver.execute_script(js)
+    def js_scroll_end_2(self):
+        """滚动到底部2/3"""
+        js = "window.scrollTo(0,1200)"
         self.driver.execute_script(js)
 
     def js_scroll_end(self, x=0):

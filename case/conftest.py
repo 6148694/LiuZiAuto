@@ -9,8 +9,7 @@ from pages.login_page import LoginPage
 def driver(request):
     _driver = webdriver.Chrome()
     _driver.maximize_window()
-    _driver.get("https://sofia2.ezijing.com/api/passport/rest/login")
-
+    _driver.get("https://sofia2.ezijing.com/")
     def end():
         """测试用例完成以后，执行终结函数"""
         time.sleep(3)
