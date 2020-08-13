@@ -3,14 +3,35 @@
 # @Author  : WangLei
 from common.base import Base
 import time
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
+import os
+import requests
+import urllib3
+urllib3.disable_warnings()
 host = "https://sofia2.ezijing.com/"
 #获取本地图片地址
-import os
 path = os.path.dirname(__file__)
 path1 = os.path.dirname(path)
 pic_path = os.path.join(path1,"images/pic.jpg")
+#删除数据接口
+delete_api_url = "https://zws-api2.ezijing.com/v1/enrollment/submissions/delete"
+login_api_url ="https://sofia2.ezijing.com/api/passport/rest/login"
+def delete_account():
+    login_body={
+        "account":"6148694@qq.com",
+        "password":"Gaojunqing110",
+        "RememberMe":"1",
+        "rd":"%2F",
+        "service":"https://sofia.ezijing.com"
+    }
+    delete_body ={
+        "project_id":1000
+    }
+    s = requests.session()
+    result = s.post(login_api_url,data=login_body,verify=False)
+    print(result.text)
+    DeleteResult = s.post(delete_api_url,data=delete_body,verify=False)
+    print(DeleteResult.text)
+    print("************************数据已清理**********************")
 
 class   LoginPage(Base):
     """登录页面"""
@@ -66,7 +87,14 @@ class   LoginPage(Base):
     #资料上传
     data_upload_loc = ("xpath","//span[text()='资料上传']")
     #图片上传
+    #有效身份证件（正面）
     input_picture_loc = ("xpath","//input[@type='file' and @name = 'file']")
+    #有效身份证件（反面）
+    input_picture1_loc = ("xpath","//div[@id='up_05']/div/input")
+    #毕业证书
+    input_picture2_loc = ("xpath","//div[@id='up_03']/div/input")
+    #学位证书
+    input_picture3_loc = ("xpath","//div[@id='up_04']/div/input")
     button_next_loc = ("xpath","//a[text()='下一步']")
     #所受培训
     institute_cn_loc = ("xpath","//input[@name='institute_cn']")
@@ -75,7 +103,12 @@ class   LoginPage(Base):
     honors_and_awards_tag_loc = ("xpath","//span[text()='荣誉奖励（可选）']")
     honors_and_awards_loc = ("xpath","//input[@label='荣誉/奖励' and @name='title']")
     get_time_loc = ("xpath","//input[@name='summary' and @label='证书颁发机构及获得时间']")
-
+    #返回报名系统
+    back_os_loc = ("xpath","//a[@class='return fr']")
+    #提交审核
+    submit_loc = ("xpath","//a[text()='提交']")
+    i_do_loc = ("xpath","//input[@type='radio' and @name='agree']")
+    i_submit_loc = ("xpath","//button[@class='btn-red' and @type='submit']")
     def click_login_tag(self):
         """点击登录Tag"""
         self.click(self.login_tag_loc)
@@ -110,26 +143,25 @@ class   LoginPage(Base):
         self.click(self.booking_form_tag_loc)
     def submit_personinformation(self):
         """首次提交个人信息"""
-        self.send(self.my_name_loc,"测试")
-        self.send(self.my_phone_loc,"13088572081")
-        self.send(self.my_email_loc,"6148694@qq.com")
+        self.send(self.my_name_loc,"测试小王")
+        self.send(self.my_phone_loc,"13088572088")
+        self.send(self.my_email_loc,"313035600@qq.com")
     def submit_personinformation1(self):
         """补充个人资料"""
-        self.send(self.my_id_number_loc,"152628199702022123")
+        self.send(self.my_id_number_loc,"152628199702022188")
         self.click(self.my_sex_boy_loc)
         self.scroll_end()
         self.click(self.my_province_loc)
         self.click(self.my_city_loc)
         self.scroll_end()
-        self.send(self.my_wechat_loc,"13088572081")
+        self.send(self.my_wechat_loc,"13088572088")
         self.send(self.my_post_address_loc,"北京宋庄小堡73号")
         self.send(self.my_emergency_contact_name_loc,"小叶子")
-        self.send(self.my_emergency_contacts_phone_loc,"13088572081")
+        self.send(self.my_emergency_contacts_phone_loc,"13088572088")
         self.click(self.my_save_button_loc)
         a = self.switch_alert()
         print(a.text)
         a.accept()
-        assert '保存个人信息成功！'in  a.text
         self.js_scroll_top()
         self.js_scroll_top()
     def submit_education_background(self):
@@ -143,7 +175,6 @@ class   LoginPage(Base):
         a = self.switch_alert()
         print(a.text)
         a.accept()
-        assert '保存教育信息成功！'in  a.text
         self.js_scroll_top()
     def submit_work_experience(self):
         """保存工作经验"""
@@ -159,7 +190,6 @@ class   LoginPage(Base):
         a = self.switch_alert()
         print(a.text)
         a.accept()
-        assert '保存工作信息成功！'in  a.text
     def submit_learning_object(self):
         """保存学习目标"""
         self.click(self.learning_object_loc)
@@ -169,12 +199,21 @@ class   LoginPage(Base):
         a = self.switch_alert()
         print(a.text)
         a.accept()
-        assert '保存学习目的信息成功！'in  a.text
     def  submit_data_upload(self):
         """资料上传"""
         self.click(self.data_upload_loc)
+        time.sleep(1)
         self.send(self.input_picture_loc,pic_path)
+        self.js_scroll_end_2()
+        time.sleep(1)
+        self.send(self.input_picture1_loc,pic_path)
+        self.js_scroll_end_1()
+        time.sleep(1)
+        self.send(self.input_picture2_loc,pic_path)
         self.js_scroll_end()
+        time.sleep(1)
+        self.send(self.input_picture3_loc,pic_path)
+        time.sleep(3)
         self.click(self.button_next_loc)
     def submit_skill_training(self):
         """所有培训填写"""
@@ -184,7 +223,6 @@ class   LoginPage(Base):
         a = self.switch_alert()
         print(a.text)
         a.accept()
-        assert '保存培训信息成功！'in  a.text
     def submit_honors_and_awards(self):
         """填写荣誉奖励"""
         self.click(self.honors_and_awards_tag_loc)
@@ -194,29 +232,41 @@ class   LoginPage(Base):
         a = self.switch_alert()
         print(a.text)
         a.accept()
-        assert '保存荣誉和奖励信息成功！'in  a.text
+        self.click(self.back_os_loc)
+    def submit_i_do(self):
+        """我同意"""
+        self.click(self.submit_loc)
+        self.click(self.i_do_loc)
+        self.click(self.i_submit_loc)
 if __name__ == '__main__':
-    from selenium import webdriver
-    driver = webdriver.Chrome()
-    web = LoginPage(driver)
-    driver.get(host)
-    driver.maximize_window()
-    web.login()
-    time.sleep(2)
-    result = web.is_login_success()
-    print(result)
-    web.scroll_end()
-    web.click_signin()
-    web.click_booking_form()
-    time.sleep(3)
-    #填写个人信息操作
-    web.submit_personinformation()
-    web.submit_personinformation1()
-    web.submit_education_background()
-    web.submit_work_experience()
-    web.submit_learning_object()
-    web.submit_data_upload()
-    web.submit_skill_training()
-    web.submit_honors_and_awards()
-    time.sleep(5)
-    driver.quit()
+    # from selenium import webdriver
+    # driver = webdriver.Chrome()
+    # web = LoginPage(driver)
+    # driver.get(host)
+    # driver.maximize_window()
+    # web.login()
+    # time.sleep(2)
+    # result = web.is_login_success()
+    # print(result)
+    # web.scroll_end()
+    # print('向下滚动')
+    # web.click_signin()
+    # print('点击报名申请')
+    # web.click_booking_form()
+    # print('点击填写报名表')
+    # time.sleep(2)
+    # #填写个人信息操作
+    # web.submit_personinformation()
+    # print('填写个人信息')
+    # web.submit_personinformation1()
+    # print('')
+    # web.submit_education_background()
+    # web.submit_work_experience()
+    # web.submit_learning_object()
+    # web.submit_data_upload()
+    # web.submit_skill_training()
+    # web.submit_honors_and_awards()
+    # web.submit_i_do()
+    # time.sleep(5)
+    # driver.quit()
+    delete_account()
