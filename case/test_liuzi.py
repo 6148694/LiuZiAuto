@@ -20,9 +20,9 @@ def is_windows_linux():
     #  可以先判断是否启动无界面
     chrome_options.add_argument('--headless')  # 无界面
     if "win" not in sys.platform:
-        print("当前运行的操作系统是Linux,请确认是操作系统是否判断正确")
-    else:
         print("当前运行的操作系统是Windows,请确认是操作系统是否判断正确")
+    else:
+        print("当前运行的操作系统是Linux,请确认是操作系统是否判断正确")
         chrome_options.add_argument('--no-sandbox')  # 解决DevToolsActivePort文件不存在报错问题
         chrome_options.add_argument('--disable-gpu')   # 禁用GPU硬件加速。如果软件渲染器没有就位，则GPU进程将不会启动。
         chrome_options.add_argument('--disable-dev-shm-usage')
