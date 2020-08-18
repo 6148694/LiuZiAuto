@@ -1,20 +1,18 @@
-#!/usr/bin/python3
 # -*- coding: utf-8 -*-
+# @Time    : 2020/8/18 10:45
 # @Author  : WangLei
+from common.base import Base
+import time
+import os
 import requests
 import urllib3
-import os
-import time
-import allure
 from case.conftest import *
-from common.base import Base
 urllib3.disable_warnings()
+import allure
 #获取本地图片地址
 path = os.path.dirname(__file__)
 path1 = os.path.dirname(path)
 pic_path = os.path.join(path1,"images/pic.jpg")
-#删除数据接口
-
 def delete_account():
     login_body={
         "account":"6148694@qq.com",
@@ -33,18 +31,8 @@ def delete_account():
     print(DeleteResult.text)
     print("************************************************数据已清理**************************************************************")
 
-class   LoginPage(Base):
-    """登录页面"""
-    #首页登录入口提示
-    login_tag_loc = ("xpath","//*[text()='登录']")
-    #首页登录用户名
-    username_loc = ("xpath","//input[@name='account' ]")
-    #首页登录密码
-    password_loc = ("xpath","//input[@name='password']")
-    #首页登录按钮
-    login_button_loc = ("xpath","//button[@type='submit']")
-    #登录后的文字校验
-    success_login_loc = ("xpath","//*[text()='系统首页']")
+class   InformationPage(Base):
+    """填写留资信息"""
     #首页的报名申请
     signin_tag_loc =  ("xpath","//div[@class='col-xs-6 col-sm-4 col-md-4']")
     #填写报名表
@@ -109,37 +97,7 @@ class   LoginPage(Base):
     submit_loc = ("xpath","//a[text()='提交']")
     i_do_loc = ("xpath","//input[@type='radio' and @name='agree']")
     i_submit_loc = ("xpath","//button[@class='btn-red' and @type='submit']")
-    @allure.step("点击登录tag")
-    def click_login_tag(self):
-        """点击登录Tag"""
-        self.click(self.login_tag_loc)
-    @allure.step("输入用户名")
-    def input_user(self,username):
-        """输入账号"""
-        self.send(self.username_loc,username)
-    @allure.step("输入密码")
-    def input_password(self,password):
-        """输入密码"""
-        self.send(self.password_loc,password)
-    @allure.step("点击登录按钮")
-    def click_button(self):
-        """点击登录"""
-        self.click(self.login_button_loc)
-    def login(self,username='6148694@qq.com',password='Gaojunqing110'):
-        """登录流程"""
-        self.click_login_tag()
-        self.input_user(username)
-        self.input_password(password)
-        self.click_button()
-        time.sleep(2)
-        self.is_login_success()
-    @allure.step("校验登录后的正确")
-    def is_login_success(self):
-        """判断是否登录成功，返回bool值"""
-        text = self.get_text(self.success_login_loc)
-        print("登录完成后，获取页面文本元素是:{}".format(text))
-        return text == "系统首页"
-    @allure.step("滑动到底部")
+    @allure.step("滚动到底部")
     def scroll_end(self):
         """滚动到底部"""
         self.js_scroll_end()
@@ -151,13 +109,14 @@ class   LoginPage(Base):
     def click_booking_form(self):
         """点击填写报名表"""
         self.click(self.booking_form_tag_loc)
-    @allure.step("点击输入姓名、手机号、邮件")
+        time.sleep(1)
+    @allure.step("首次提交个人信息")
     def submit_personinformation(self):
         """首次提交个人信息"""
         self.send(self.my_name_loc,"测试小王")
         self.send(self.my_phone_loc,"13088572088")
         self.send(self.my_email_loc,"313035600@qq.com")
-    @allure.step("补全个人信息")
+    @allure.step("补充个人资料")
     def submit_personinformation1(self):
         """补充个人资料"""
         self.send(self.my_id_number_loc,"152628199702022188")
@@ -218,7 +177,7 @@ class   LoginPage(Base):
         a = self.switch_alert()
         print(a.text)
         a.accept()
-    @allure.step("上传资料")
+    @allure.step("资料上传")
     def  submit_data_upload(self):
         """资料上传"""
         self.click(self.data_upload_loc)
@@ -257,7 +216,7 @@ class   LoginPage(Base):
         print(a.text)
         a.accept()
         self.click(self.back_os_loc)
-    @allure.step("我同意")
+    @allure.step("同意协议，提交信息表")
     def submit_i_do(self):
         """我同意"""
         self.click(self.submit_loc)
@@ -265,10 +224,31 @@ class   LoginPage(Base):
         self.click(self.i_submit_loc)
 if __name__ == '__main__':
     from selenium import webdriver
+    from pages.login_page import LoginPage
     delete_account()
     driver = webdriver.Chrome()
-    driver.get(host_api_url)
     web = LoginPage(driver)
     driver.maximize_window()
     web.login()
+    result = web.is_login_success()
+    print(result)
+    web.scroll_end()
+    print('向下滚动')
+    web.click_signin()
+    print('点击报名申请')
+    web.click_booking_form()
+    print('点击填写报名表')
+    time.sleep(2)
+    #填写个人信息操作
+    web.submit_personinformation()
+    print('填写个人信息')
+    web.submit_personinformation1()
+    web.submit_education_background()
+    web.submit_work_experience()
+    web.submit_learning_object()
+    web.submit_data_upload()
+    web.submit_skill_training()
+    web.submit_honors_and_awards()
+    web.submit_i_do()
+    time.sleep(5)
     driver.quit()
