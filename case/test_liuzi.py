@@ -19,7 +19,6 @@ def  test_submit_personinformation(_login):
     web.click_signin()
     web.click_booking_form()
     web.submit_personinformation()
-    delete_account()
     web.submit_personinformation1()
     web.submit_education_background()
     web.submit_work_experience()
