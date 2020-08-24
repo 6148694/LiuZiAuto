@@ -9,10 +9,15 @@ import urllib3
 from case.conftest import *
 urllib3.disable_warnings()
 import allure
+#截图时间
+screen_time = time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime(time.time()))
 #获取本地图片地址
 path = os.path.dirname(__file__)
 path1 = os.path.dirname(path)
 pic_path = os.path.join(path1,"images/pic.jpg")
+screen_path = os.path.join(path1,"screenshot/")
+print(screen_time)
+print(screen_path)
 def delete_account():
     login_body={
         "account":"6148694@qq.com",
@@ -133,6 +138,7 @@ class   InformationPage(Base):
         time.sleep(2)
         a = self.switch_alert()
         print(a.text)
+        assert a.text in '保存个人信息成功！'
         a.accept()
         self.js_scroll_top()
         self.js_scroll_top()
@@ -148,6 +154,7 @@ class   InformationPage(Base):
         time.sleep(2)
         a = self.switch_alert()
         print(a.text)
+        assert a.text in '保存教育信息成功！'
         a.accept()
         self.js_scroll_top()
     @allure.step("保存工作经验")
@@ -165,6 +172,7 @@ class   InformationPage(Base):
         time.sleep(2)
         a = self.switch_alert()
         print(a.text)
+        assert a.text in '保存工作信息成功！'
         a.accept()
     @allure.step("保存学习目标")
     def submit_learning_object(self):
@@ -176,6 +184,7 @@ class   InformationPage(Base):
         time.sleep(2)
         a = self.switch_alert()
         print(a.text)
+        assert a.text in '保存学习目的信息成功！'
         a.accept()
     @allure.step("资料上传")
     def  submit_data_upload(self):
@@ -203,6 +212,7 @@ class   InformationPage(Base):
         time.sleep(2)
         a = self.switch_alert()
         print(a.text)
+        assert a.text in '保存培训信息成功！'
         a.accept()
     @allure.step("填写荣誉奖励")
     def submit_honors_and_awards(self):
@@ -214,6 +224,7 @@ class   InformationPage(Base):
         time.sleep(2)
         a = self.switch_alert()
         print(a.text)
+        assert a.text in '保存荣誉和奖励信息成功！'
         a.accept()
         self.click(self.back_os_loc)
     @allure.step("同意协议，提交信息表")

@@ -12,8 +12,25 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import TimeoutException
 import time
+import datetime
+import os
+import allure
+picture_time = time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime(time.time()))
+directory_time = time.strftime("%Y-%m-%d", time.localtime(time.time()))
+print(picture_time)
+print(directory_time)
+print(os.getcwd())
 """封装selenium基本操作"""
-
+# 获取到当前文件的目录，并检查是否有 directory_time 文件夹，如果不存在则自动新建 directory_time 文件
+try:
+    File_Path = os.getcwd() + '\\' + directory_time + '\\'
+    if not os.path.exists(File_Path):
+        os.makedirs(File_Path)
+        print("目录新建成功：%s" % File_Path)
+    else:
+        print("目录已存在！！！")
+except BaseException as msg:
+    print("新建目录失败：%s" % msg)
 class LocatorTypeError(Exception):
     pass
 
@@ -210,7 +227,39 @@ class Base():
                 self.driver.switch_to.frame(ele)
         except:
             print("iframe切换异常")
-
+    def save_screenshot(self, img_doc):
+        '''
+        页面截屏保存截图
+        :param img_doc: 截图说明
+        :return:
+        '''
+        file_name = directory_time + "\\{}_{}.png".format(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime(time.time())), img_doc)
+        self.driver.save_screenshot(file_name)
+        with open(file_name, mode='rb') as f:
+            file = f.read()
+        allure.attach(file, img_doc, allure.attachment_type.PNG)
+        print("页面截图文件保存在：{}".format(file_name))
+    # def save_scree_image(self):
+    #     """
+    #     对当前页面进行截图
+    #     :return:
+    #     """
+    #     start_time = time.time()
+    #     filename = '{}.png'.format(start_time)
+    #     file_path = os.path.join(directory_time, filename)
+    #     self.driver.save_screenshot(file_path)
+    #     print("错误页面截图成功，图表保存的路径:{}".format(file_path))
+    #     return file_path
+    #
+    # def save_image_to_allure(self):
+    #     """
+    #     保存失败的截图到allure报告中
+    #     :return:
+    #     """
+    #     file_path = self.save_scree_image()
+    #     with open(file_path, "rb") as f:
+    #         file = f.read()
+    #         allure.attach(file, "失败截图", allure.attachment_type.png)
     def switch_handle(self, window_name):
         self.driver.switch_to.window(window_name)
 
@@ -218,6 +267,7 @@ class Base():
         r = self.is_alert()
         if not r:
             print("alert不存在")
+            self.save_screenshot('报错截图')
         else:
             return r
 

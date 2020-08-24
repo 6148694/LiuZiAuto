@@ -1,0 +1,27 @@
+目前是window
+正在定位元素信息：定位方式->xpath,value值->//*[text()='登录']
+正在定位元素信息：定位方式->xpath,value值->//input[@name='account' ]
+正在定位元素信息：定位方式->xpath,value值->//input[@name='password']
+正在定位元素信息：定位方式->xpath,value值->//button[@type='submit']
+正在定位元素信息：定位方式->xpath,value值->//*[text()='系统首页']
+登录完成后，获取页面文本元素是:系统首页
+正在定位元素信息：定位方式->xpath,value值->//div[@class='col-xs-6 col-sm-4 col-md-4']
+正在定位元素信息：定位方式->xpath,value值->//*[text()='填写报名表']
+正在定位元素信息：定位方式->xpath,value值->//input[@name='real_name_cn']
+正在定位元素信息：定位方式->xpath,value值->//input[@name='phone_number']
+正在定位元素信息：定位方式->xpath,value值->//input[@name='email']
+{"status":200,"message":"","data":{"code":0,"msg":"ok","data":{"TGC":"VEdULTQyMDMtZVBHVFNISi10UEl6YnJiaXZJTWh2LU1qaXFTSFNVdndsQnZ6bmFwcVZwOWlnRUV0MjZZZ1VCcHlOUlVrdzlQRkE4OC1lY3MyMEBAQDEwLjI1LjEyOC4xMDNAQEBweXRob24tcmVxdWVzdHMvMi4yMi4wQEBANjY5MTU5MzU5NTI1OTk3NzcyOA=="}}}
+{"name":"Bad Request","message":"未找到提交资料","code":0,"status":400}
+************************************************数据已清理**************************************************************
+正在定位元素信息：定位方式->xpath,value值->//input[@name='id_number']
+正在定位元素信息：定位方式->xpath,value值->//input[@name='gender' and @type='radio'and @value='1']
+正在定位元素信息：定位方式->xpath,value值->//span[@class='formsy-address']/select/option[2]
+正在定位元素信息：定位方式->xpath,value值->//span[@class='formsy-address']/select[2]/option[2]
+正在定位元素信息：定位方式->xpath,value值->//input[@name='we_chat_account']
+正在定位元素信息：定位方式->xpath,value值->//input[@name='mailing_address']
+正在定位元素信息：定位方式->xpath,value值->//input[@name='emergency_contact_name']
+正在定位元素信息：定位方式->xpath,value值->//input[@name='emergency_contacts_phone']
+正在定位元素信息：定位方式->xpath,value值->//button[@class='btn btn-warn']
+alert不存在
+页面截图文件保存在：2020-08-24\2020-08-24-10_58_46_错误截图.png
+执行失败的原因是：'NoneType' object has no attribute 'text'
